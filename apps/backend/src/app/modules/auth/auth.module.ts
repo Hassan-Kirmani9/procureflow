@@ -6,6 +6,7 @@ import { User, UserSchema } from "./schemas/user.schema";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { JwtStrategy } from "./strategies/jwt.strategy";
+import { RolesGuard } from "./guards/roles.guard";
 
 @Module({
   imports: [
@@ -17,6 +18,6 @@ import { JwtStrategy } from "./strategies/jwt.strategy";
     PassportModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy,RolesGuard],
 })
 export class AuthModule {}

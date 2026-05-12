@@ -11,15 +11,15 @@ export enum UserRole {
 @Schema({ timestamps: true })
 export class User {
     @Prop({ required: true })
-    name: string
+    name!: string
     @Prop({ required: false })
-    email: string
+    email!: string
     @Prop({ required: true })
-    password: string
+    password!: string
     @Prop({ required: true, default: UserRole.REQUESTOR })
-    role: UserRole
+    role!: UserRole
     @Prop({ required: true, default: true })
-    isActive: boolean
+    isActive!: boolean
 
 }
 
