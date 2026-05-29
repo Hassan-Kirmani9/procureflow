@@ -1,0 +1,77 @@
+<div class="flex flex-col gap-6">
+
+  <div>
+    <h1 class="text-2xl font-bold text-gray-800">My Purchase Orders</h1>
+    <p class="text-gray-500 text-sm mt-1">Purchase orders issued to you</p>
+  </div>
+
+  <p-table [value]="pos" [loading]="loading" [stripedRows]="true">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>PO Number</th>
+        <th>Title</th>
+        <th>Total Amount</th>
+        <th>Delivery Days</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-po>
+      <tr>
+        <td>{{ po.poNumber }}</td>
+        <td>{{ po.title }}</td>
+        <td>{{ po.totalAmount | number }}</td>
+        <td>{{ po.deliveryDays }} days</td>
+        <td>
+          <p-tag [value]="po.status" [severity]="getSeverity(po.status)" />
+        </td>
+        <td>
+          <p-button label="View" size="small" [outlined]="true" (click)="viewDetail(po)" />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="6" class="text-center text-gray-500 py-8">No purchase orders found</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <p-dialog header="Purchase Order Detail" [(visible)]="showDetailDialog" [modal]="true" [style]="{width:'550px'}">
+    @if (selectedPO) {
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <p class="text-xs text-gray-500">PO Number</p>
+          <p class="font-medium">{{ selectedPO.poNumber }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500">Status</p>
+          <p-tag [value]="selectedPO.status" [severity]="getSeverity(selectedPO.status)" />
+        </div>
+        <div>
+          <p class="text-xs text-gray-500">Title</p>
+          <p class="font-medium">{{ selectedPO.title }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500">Total Amount</p>
+          <p class="font-medium">{{ selectedPO.totalAmount | number }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500">Quantity</p>
+          <p class="font-medium">{{ selectedPO.quantity }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500">Payment Terms</p>
+          <p class="font-medium">{{ selectedPO.paymentTerms || 'N/A' }}</p>
+        </div>
+      </div>
+    }
+    <ng-template pTemplate="footer">
+      @if (selectedPO?.status === 'approved') {
+        <p-button label="Acknowledge PO" severity="success" (click)="acknowledge(selectedPO._id)" />
+      }
+      <p-button label="Close" severity="secondary" [outlined]="true" (click)="showDetailDialog = false" />
+    </ng-template>
+  </p-dialog>
+
+</div>

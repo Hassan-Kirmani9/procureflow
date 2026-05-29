@@ -8,6 +8,7 @@ import { UsersModule } from './modules/users/user.module';
 import { DepartmentsModule } from './modules/departments/departments.module';
 import { PurchaseRequestsModule } from './modules/purchase-requests/purchase-requests.module';
 import { RfqModule } from './modules/rfq/rfq.module';
+import { PurchaseOrdersModule } from './modules/purchase-orders/purchase-orders.module';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { RfqModule } from './modules/rfq/rfq.module';
       envFilePath: '.env',
     }),
     MongooseModule.forRootAsync({
-      imports: [ConfigModule, AuthModule, UsersModule , DepartmentsModule, PurchaseRequestsModule, RfqModule ],
+      imports: [ConfigModule, AuthModule, UsersModule , DepartmentsModule, PurchaseRequestsModule, RfqModule , PurchaseOrdersModule ],
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGODB_URI'),
       }),
