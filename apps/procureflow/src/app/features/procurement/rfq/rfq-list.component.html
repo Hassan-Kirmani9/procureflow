@@ -1,0 +1,139 @@
+<div class="flex flex-col gap-6">
+
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">RFQ Management</h1>
+      <p class="text-gray-500 text-sm mt-1">Request for Quotations</p>
+    </div>
+    <p-button label="Create RFQ" icon="pi pi-plus" (click)="openDialog()" />
+  </div>
+
+  <p-table [value]="rfqs" [loading]="loading" [stripedRows]="true">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Title</th>
+        <th>Linked PR</th>
+        <th>Quantity</th>
+        <th>Deadline</th>
+        <th>Quotes</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rfq>
+      <tr>
+        <td>{{ rfq.title }}</td>
+        <td>{{ rfq.purchaseRequest?.title }}</td>
+        <td>{{ rfq.quantity }}</td>
+        <td>{{ rfq.deadline | date:'mediumDate' }}</td>
+        <td>{{ rfq.quotes?.length || 0 }}</td>
+        <td>
+          <p-tag [value]="rfq.status" [severity]="getSeverity(rfq.status)" />
+        </td>
+        <td>
+          <p-button label="View Bids" size="small" [outlined]="true" (click)="viewBids(rfq)" />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="7" class="text-center text-gray-500 py-8">No RFQs found</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <!-- Create RFQ Dialog -->
+  <p-dialog header="Create RFQ" [(visible)]="showDialog" [modal]="true" [style]="{width: '550px'}">
+    <form [formGroup]="form" class="flex flex-col gap-4 pt-2">
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Linked Purchase Request</label>
+        <select formControlName="purchaseRequestId" class="w-full border rounded-md p-2">
+          <option value="">Select PR</option>
+          @for (pr of approvedPRs; track pr._id) {
+            <option [value]="pr._id">{{ pr.title }}</option>
+          }
+        </select>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Title</label>
+        <input pInputText formControlName="title" placeholder="RFQ Title" class="w-full" />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Description</label>
+        <input pInputText formControlName="description" placeholder="Specs and requirements" class="w-full" />
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1">
+          <label class="font-medium text-sm">Quantity</label>
+          <input pInputText type="number" formControlName="quantity" class="w-full" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="font-medium text-sm">Deadline</label>
+          <input type="date" formControlName="deadline" class="w-full border rounded-md p-2" />
+        </div>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Invite Suppliers</label>
+        <select multiple formControlName="invitedSuppliers" class="w-full border rounded-md p-2 h-32">
+          @for (supplier of suppliers; track supplier._id) {
+            <option [value]="supplier._id">{{ supplier.name }} ({{ supplier.email }})</option>
+          }
+        </select>
+        <p class="text-xs text-gray-400">Hold Ctrl to select multiple suppliers</p>
+      </div>
+    </form>
+    <ng-template pTemplate="footer">
+      <p-button label="Cancel" severity="secondary" [outlined]="true" (click)="showDialog = false" />
+      <p-button label="Create RFQ" (click)="createRfq()" />
+    </ng-template>
+  </p-dialog>
+
+  <!-- Bid Comparison Dialog -->
+  <p-dialog header="Bid Comparison" [(visible)]="showBidDialog" [modal]="true" [style]="{width: '700px'}">
+    @if (selectedRfq) {
+      <p-table [value]="selectedRfq.quotes" [stripedRows]="true">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Supplier</th>
+            <th>Unit Price</th>
+            <th>Total Price</th>
+            <th>Delivery Days</th>
+            <th>Payment Terms</th>
+            <th>Winner</th>
+            <th>Action</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-quote>
+          <tr [class.bg-green-50]="quote.isWinner">
+            <td>{{ quote.supplier?.name }}</td>
+            <td>{{ quote.unitPrice | number }}</td>
+            <td>{{ quote.totalPrice | number }}</td>
+            <td>{{ quote.deliveryDays }} days</td>
+            <td>{{ quote.paymentTerms }}</td>
+            <td>
+              @if (quote.isWinner) {
+                <p-tag value="Winner" severity="success" />
+              }
+            </td>
+            <td>
+              <p-button
+                label="Select Winner"
+                size="small"
+                severity="success"
+                [outlined]="true"
+                (click)="selectWinner(quote.supplier?._id)"
+                [disabled]="selectedRfq.status === 'awarded'"
+              />
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7" class="text-center text-gray-500 py-4">No quotes submitted yet</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    }
+  </p-dialog>
+
+</div>

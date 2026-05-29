@@ -7,10 +7,10 @@ import { Roles } from "../auth/decorators/roles.decorator";
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('super_admin')
+@Roles('super_admin', 'procurement_manager')
 export class UsersController {
 
-  constructor(private usersService: UsersService) {}
+  constructor(private usersService: UsersService) { }
 
   @Get()
   findAll() {

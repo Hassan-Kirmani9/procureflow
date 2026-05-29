@@ -18,5 +18,5 @@ export const appRoutes: Routes = [
     { path: 'requester',canActivate: [authGuard], loadChildren: () => import('./features/requester/requester.routes').then(m => m.REQUESTER_ROUTES) },
 
 
-    // { path: 'supplier',canActivate: [authGuard], loadChildren: () => import('./features/supplier/supplier.routes').then(m => m.SUPPLIER_ROUTES) },
+    { path: 'supplier',canActivate: [authGuard], loadChildren: () => import('./features/supplier/supplier.routes').then(m => m.SUPPLIER_ROUTES) },
 ];
