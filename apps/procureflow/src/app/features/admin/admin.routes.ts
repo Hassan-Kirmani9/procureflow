@@ -2,6 +2,7 @@ import { Routes } from '@angular/router'
 import { AdminLayoutComponent } from './layout/admin-layout.component'
 import { DashboardComponent } from './dashboard/dashboard.component'
 import { UsersComponent } from './users/users.component'
+import { DepartmentsComponent } from './departments/departments.component'
 
 export const ADMIN_ROUTES: Routes = [
   {
@@ -11,6 +12,8 @@ export const ADMIN_ROUTES: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'users', component: UsersComponent },
+      { path: 'departments', component: DepartmentsComponent }
+
     ]
   }
 ]
