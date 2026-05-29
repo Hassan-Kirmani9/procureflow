@@ -1,0 +1,57 @@
+<div class="flex flex-col gap-6">
+
+  <div>
+    <h1 class="text-2xl font-bold text-gray-800">Budget Overview</h1>
+    <p class="text-gray-500 text-sm mt-1">Real-time spend tracking per department</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    @for (budget of budgets; track budget._id) {
+      <div class="bg-white rounded-xl shadow-sm p-5 border"
+           [class.border-red-300]="budget.alert100"
+           [class.border-yellow-300]="budget.alert80 && !budget.alert100"
+           [class.border-gray-200]="!budget.alert80">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-semibold text-gray-800">{{ budget.department }}</h3>
+          @if (budget.alert100) {
+            <span class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full font-medium">Over Budget</span>
+          } @else if (budget.alert80) {
+            <span class="text-xs bg-yellow-100 text-yellow-600 px-2 py-1 rounded-full font-medium">80% Alert</span>
+          }
+        </div>
+        <div class="flex flex-col gap-2 text-sm text-gray-600 mb-4">
+          <div class="flex justify-between">
+            <span>Total Budget</span>
+            <span class="font-medium">{{ budget.totalAmount | number }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Committed</span>
+            <span class="font-medium text-blue-600">{{ budget.committedAmount | number }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Actual Spend</span>
+            <span class="font-medium text-orange-600">{{ budget.actualSpend | number }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Remaining</span>
+            <span class="font-medium text-green-600">{{ budget.remaining | number }}</span>
+          </div>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-3">
+          <div
+            class="h-3 rounded-full transition-all"
+            [class.bg-green-500]="budget.utilizationPercent < 80"
+            [class.bg-yellow-500]="budget.utilizationPercent >= 80 && budget.utilizationPercent < 100"
+            [class.bg-red-500]="budget.utilizationPercent >= 100"
+            [style.width.%]="budget.utilizationPercent > 100 ? 100 : budget.utilizationPercent"
+          ></div>
+        </div>
+        <p class="text-xs text-gray-500 mt-1 text-right">{{ budget.utilizationPercent }}% utilized</p>
+      </div>
+    }
+    @empty {
+      <div class="col-span-3 text-center text-gray-500 py-8">No budgets configured yet</div>
+    }
+  </div>
+
+</div>

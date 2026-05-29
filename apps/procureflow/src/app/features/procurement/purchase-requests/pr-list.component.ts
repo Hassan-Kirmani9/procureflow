@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { ButtonModule } from "primeng/button";
 import { TableModule } from "primeng/table";
@@ -33,14 +33,21 @@ export class PRListComponent implements OnInit {
     rejectionReason: new FormControl('')
   })
 
-  constructor(private prService: PurchaseRequestsApiService) {}
+  constructor(
+    private prService: PurchaseRequestsApiService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() { this.loadPRs() }
 
   loadPRs() {
     this.loading = true
     this.prService.getAll().subscribe({
-      next: (data) => { this.prs = data; this.loading = false },
+      next: (data) => {
+        this.prs = data
+        this.loading = false
+        this.cdr.detectChanges()
+      },
       error: (err) => { console.error(err); this.loading = false }
     })
   }

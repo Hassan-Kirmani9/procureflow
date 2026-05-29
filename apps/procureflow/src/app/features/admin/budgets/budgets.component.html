@@ -1,0 +1,92 @@
+<div class="flex flex-col gap-6">
+
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Budget Management</h1>
+      <p class="text-gray-500 text-sm mt-1">Configure department budgets</p>
+    </div>
+    <p-button label="Create Budget" icon="pi pi-plus" (click)="openDialog()" />
+  </div>
+
+  <p-table [value]="budgets" [loading]="loading" [stripedRows]="true">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Department</th>
+        <th>Fiscal Year</th>
+        <th>Total Budget</th>
+        <th>Committed</th>
+        <th>Actual Spend</th>
+        <th>Remaining</th>
+        <th>Utilization</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-budget>
+      <tr [class.bg-red-50]="budget.alert100" [class.bg-yellow-50]="budget.alert80 && !budget.alert100">
+        <td>{{ budget.department }}</td>
+        <td>{{ budget.fiscalYear }}</td>
+        <td>{{ budget.totalAmount | number }}</td>
+        <td>{{ budget.committedAmount | number }}</td>
+        <td>{{ budget.actualSpend | number }}</td>
+        <td>{{ budget.remaining | number }}</td>
+        <td>
+          <div class="flex items-center gap-2">
+            <div class="w-24 bg-gray-200 rounded-full h-2">
+              <div
+                class="h-2 rounded-full"
+                [class.bg-green-500]="budget.utilizationPercent < 80"
+                [class.bg-yellow-500]="budget.utilizationPercent >= 80 && budget.utilizationPercent < 100"
+                [class.bg-red-500]="budget.utilizationPercent >= 100"
+                [style.width.%]="budget.utilizationPercent > 100 ? 100 : budget.utilizationPercent"
+              ></div>
+            </div>
+            <span class="text-sm font-medium">{{ budget.utilizationPercent }}%</span>
+          </div>
+        </td>
+        <td>
+          <p-button label="Edit" size="small" [outlined]="true" (click)="openEditDialog(budget)" />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8" class="text-center text-gray-500 py-8">No budgets configured</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <p-dialog header="Create Budget" [(visible)]="showDialog" [modal]="true" [style]="{width:'400px'}">
+    <form [formGroup]="form" class="flex flex-col gap-4 pt-2">
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Department</label>
+        <input pInputText formControlName="department" placeholder="e.g. Engineering" class="w-full" />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Fiscal Year</label>
+        <input pInputText type="number" formControlName="fiscalYear" class="w-full" />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Total Budget</label>
+        <input pInputText type="number" formControlName="totalAmount" placeholder="0" class="w-full" />
+      </div>
+    </form>
+    <ng-template pTemplate="footer">
+      <p-button label="Cancel" severity="secondary" [outlined]="true" (click)="showDialog = false" />
+      <p-button label="Create" (click)="createBudget()" />
+    </ng-template>
+  </p-dialog>
+
+  <p-dialog header="Edit Budget" [(visible)]="showEditDialog" [modal]="true" [style]="{width:'350px'}">
+    <form [formGroup]="editForm" class="pt-2">
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Total Budget Amount</label>
+        <input pInputText type="number" formControlName="totalAmount" class="w-full" />
+      </div>
+    </form>
+    <ng-template pTemplate="footer">
+      <p-button label="Cancel" severity="secondary" [outlined]="true" (click)="showEditDialog = false" />
+      <p-button label="Update" (click)="updateBudget()" />
+    </ng-template>
+  </p-dialog>
+
+</div>

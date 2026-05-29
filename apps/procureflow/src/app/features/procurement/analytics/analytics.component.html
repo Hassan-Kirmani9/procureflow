@@ -1,0 +1,120 @@
+<div class="flex flex-col gap-6">
+
+  <div>
+    <h1 class="text-2xl font-bold text-gray-800">Analytics Dashboard</h1>
+    <p class="text-gray-500 text-sm mt-1">Platform-wide procurement insights</p>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-200">
+      <p class="text-xs text-gray-500 uppercase tracking-wide">Total PRs</p>
+      <p class="text-3xl font-bold text-gray-800 mt-1">{{ totalPRs }}</p>
+      <p class="text-xs text-green-600 mt-1">{{ approvedPRs }} approved</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-200">
+      <p class="text-xs text-gray-500 uppercase tracking-wide">Purchase Orders</p>
+      <p class="text-3xl font-bold text-gray-800 mt-1">{{ totalPOs }}</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-200">
+      <p class="text-xs text-gray-500 uppercase tracking-wide">Total Budget</p>
+      <p class="text-3xl font-bold text-gray-800 mt-1">{{ totalBudget | number }}</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-200">
+      <p class="text-xs text-gray-500 uppercase tracking-wide">Committed Spend</p>
+      <p class="text-3xl font-bold text-gray-800 mt-1">{{ totalCommitted | number }}</p>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <!-- PR Status Breakdown -->
+    <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-200">
+      <h3 class="font-semibold text-gray-700 mb-4">PR Status Breakdown</h3>
+      <div style="height: 250px">
+        @if (prStatusChartData.labels) {
+          <p-chart type="doughnut" [data]="prStatusChartData" [options]="chartOptions" height="250" />
+        }
+      </div>
+    </div>
+
+    <!-- Monthly Spend -->
+    <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-200">
+      <h3 class="font-semibold text-gray-700 mb-4">Monthly Spend Trend</h3>
+      <div style="height: 250px">
+        @if (spendChartData.labels) {
+          <p-chart type="line" [data]="spendChartData" [options]="barChartOptions" height="250" />
+        }
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Budget vs Spend Chart -->
+  <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-200">
+    <h3 class="font-semibold text-gray-700 mb-4">Budget vs Committed vs Actual Spend</h3>
+    <div style="height: 300px">
+      @if (budgetChartData.labels) {
+        <p-chart type="bar" [data]="budgetChartData" [options]="barChartOptions" height="300" />
+      }
+    </div>
+  </div>
+
+  <!-- Bottom Row -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <!-- Recent POs -->
+    <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-200">
+      <h3 class="font-semibold text-gray-700 mb-4">Recent Purchase Orders</h3>
+      <p-table [value]="recentPOs" [stripedRows]="true">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>PO Number</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-po>
+          <tr>
+            <td>{{ po.poNumber }}</td>
+            <td>{{ po.totalAmount | number }}</td>
+            <td>
+              <p-tag [value]="po.status" [severity]="getPoSeverity(po.status)" />
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <!-- Supplier Leaderboard -->
+    <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-200">
+      <h3 class="font-semibold text-gray-700 mb-4">Supplier Performance</h3>
+      <p-table [value]="suppliers" [stripedRows]="true">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Company</th>
+            <th>Score</th>
+            <th>Status</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-supplier>
+          <tr>
+            <td>{{ supplier.companyName }}</td>
+            <td>{{ supplier.performanceScore }}/5</td>
+            <td>
+              <p-tag [value]="supplier.status" [severity]="getSupplierSeverity(supplier.status)" />
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="3" class="text-center text-gray-500 py-4">No suppliers found</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+  </div>
+
+</div>

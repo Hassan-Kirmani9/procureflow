@@ -4,13 +4,15 @@ import { PurchaseOrder, PurchaseOrderSchema } from "./schemas/purchase-order.sch
 import { RFQ, RFQSchema } from "../rfq/schemas/rfq.schema";
 import { PurchaseOrdersController } from "./purchase-orders.controller";
 import { PurchaseOrdersService } from "./purchase-orders.service";
+import { BudgetsModule } from "../budgets/budgets.module";
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: PurchaseOrder.name, schema: PurchaseOrderSchema },
       { name: RFQ.name, schema: RFQSchema }
-    ])
+    ]),
+    BudgetsModule
   ],
   controllers: [PurchaseOrdersController],
   providers: [PurchaseOrdersService],

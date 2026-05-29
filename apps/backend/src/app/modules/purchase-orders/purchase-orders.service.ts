@@ -4,13 +4,15 @@ import { Model } from "mongoose";
 import { PurchaseOrder, PurchaseOrderDocument, POStatus } from "./schemas/purchase-order.schema";
 import { RFQ, RFQDocument } from "../rfq/schemas/rfq.schema";
 import { CreatePoDto } from "./dto/create-po.dto";
+import { BudgetsService } from "../budgets/budgets.service";
 
 @Injectable()
 export class PurchaseOrdersService {
 
   constructor(
     @InjectModel(PurchaseOrder.name) private poModel: Model<PurchaseOrderDocument>,
-    @InjectModel(RFQ.name) private rfqModel: Model<RFQDocument>
+    @InjectModel(RFQ.name) private rfqModel: Model<RFQDocument>,
+    private budgetsService: BudgetsService
   ) {}
 
   async createFromRfq(dto: CreatePoDto, userId: string) {
@@ -42,7 +44,7 @@ export class PurchaseOrdersService {
   async findAll() {
     return this.poModel.find()
       .populate('supplier', 'name email')
-      .populate('purchaseRequest', 'title')
+      .populate('purchaseRequest', 'title department')
       .populate('rfq', 'title')
       .populate('createdBy', 'name email')
       .sort({ createdAt: -1 })
@@ -67,9 +69,18 @@ export class PurchaseOrdersService {
 
   async approve(id: string) {
     const po = await this.poModel.findById(id)
+      .populate('purchaseRequest')
     if (!po) throw new NotFoundException('PO not found')
+
     po.status = POStatus.APPROVED
-    return po.save()
+    await po.save()
+
+    const pr = po.purchaseRequest as any
+    if (pr?.department) {
+      await this.budgetsService.commitAmount(pr.department, po.totalAmount)
+    }
+
+    return po
   }
 
   async acknowledge(id: string) {
