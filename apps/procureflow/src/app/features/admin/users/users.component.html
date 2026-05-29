@@ -1,0 +1,97 @@
+<div class="flex flex-col gap-6">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">User Management</h1>
+      <p class="text-gray-500 text-sm mt-1">Manage all platform users</p>
+    </div>
+    <p-button label="Create User" icon="pi pi-plus" (click)="openDialog()" />
+  </div>
+
+  <!-- Table -->
+  <p-table [value]="users" [loading]="loading" stripedRows>
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user>
+      <tr>
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.role }}</td>
+        <td>
+          <p-tag
+            [value]="user.isActive ? 'Active' : 'Inactive'"
+            [severity]="user.isActive ? 'success' : 'danger'"
+          />
+        </td>
+        <td>
+          <p-button
+            label="Deactivate"
+            severity="danger"
+            size="small"
+            [outlined]="true"
+            (click)="deactivateUser(user._id)"
+            [disabled]="!user.isActive"
+          />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5" class="text-center text-gray-500 py-8">No users found</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <!-- Create User Dialog -->
+  <p-dialog header="Create User" [(visible)]="showDialog" [modal]="true" [style]="{width: '450px'}">
+    <form [formGroup]="form" class="flex flex-col gap-4 pt-2">
+
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Name</label>
+        <input pInputText formControlName="name" placeholder="Full name" class="w-full" />
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Email</label>
+        <input pInputText formControlName="email" placeholder="Email address" class="w-full" />
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Password</label>
+        <input pInputText type="password" formControlName="password" placeholder="Password" class="w-full" />
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Role</label>
+        <p-select
+          formControlName="role"
+          [options]="roles"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Select role"
+          styleClass="w-full"
+        />
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Department</label>
+        <input pInputText formControlName="department" placeholder="Department (optional)" class="w-full" />
+      </div>
+
+    </form>
+
+    <ng-template pTemplate="footer">
+      <p-button label="Cancel" severity="secondary" [outlined]="true" (click)="showDialog = false" />
+      <p-button label="Create" (click)="createUser()" />
+    </ng-template>
+  </p-dialog>
+
+</div>
