@@ -12,10 +12,10 @@ export const appRoutes: Routes = [
     { path: 'admin',canActivate: [authGuard],  loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES) },
 
 
-    // { path: 'procurement',canActivate: [authGuard], loadChildren: () => import('./features/procurement/procurement.routes').then(m => m.PROCUREMENT_ROUTES) },
+    { path: 'procurement',canActivate: [authGuard], loadChildren: () => import('./features/procurement/procurement.routes').then(m => m.PROCUREMENT_ROUTES) },
 
 
-    // { path: 'requester',canActivate: [authGuard], loadChildren: () => import('./features/requester/requester.routes').then(m => m.REQUESTER_ROUTES) },
+    { path: 'requester',canActivate: [authGuard], loadChildren: () => import('./features/requester/requester.routes').then(m => m.REQUESTER_ROUTES) },
 
 
     // { path: 'supplier',canActivate: [authGuard], loadChildren: () => import('./features/supplier/supplier.routes').then(m => m.SUPPLIER_ROUTES) },

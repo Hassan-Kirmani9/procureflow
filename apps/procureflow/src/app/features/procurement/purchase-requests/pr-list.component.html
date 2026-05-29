@@ -1,0 +1,70 @@
+<div class="flex flex-col gap-6">
+
+  <div>
+    <h1 class="text-2xl font-bold text-gray-800">Purchase Requests</h1>
+    <p class="text-gray-500 text-sm mt-1">Review and action all purchase requests</p>
+  </div>
+
+  <p-table [value]="prs" [loading]="loading" [stripedRows]="true">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Title</th>
+        <th>Requested By</th>
+        <th>Department</th>
+        <th>Est. Cost</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-pr>
+      <tr>
+        <td>{{ pr.title }}</td>
+        <td>{{ pr.requestedBy?.name }}</td>
+        <td>{{ pr.department }}</td>
+        <td>{{ pr.estimatedCost | number }}</td>
+        <td>{{ pr.priority }}</td>
+        <td>
+          <p-tag [value]="pr.status" [severity]="getSeverity(pr.status)" />
+        </td>
+        <td class="flex gap-2">
+          <p-button
+            label="Approve"
+            severity="success"
+            size="small"
+            [outlined]="true"
+            (click)="approve(pr._id)"
+            [disabled]="pr.status === 'approved' || pr.status === 'rejected'"
+          />
+          <p-button
+            label="Reject"
+            severity="danger"
+            size="small"
+            [outlined]="true"
+            (click)="openRejectDialog(pr)"
+            [disabled]="pr.status === 'approved' || pr.status === 'rejected'"
+          />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="7" class="text-center text-gray-500 py-8">No purchase requests found</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <p-dialog header="Reject Request" [(visible)]="showRejectDialog" [modal]="true" [style]="{width: '400px'}">
+    <form [formGroup]="rejectForm" class="flex flex-col gap-4 pt-2">
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Rejection Reason</label>
+        <input pInputText formControlName="rejectionReason" placeholder="Why is this being rejected?" class="w-full" />
+      </div>
+    </form>
+    <ng-template pTemplate="footer">
+      <p-button label="Cancel" severity="secondary" [outlined]="true" (click)="showRejectDialog = false" />
+      <p-button label="Reject" severity="danger" (click)="reject()" />
+    </ng-template>
+  </p-dialog>
+
+</div>

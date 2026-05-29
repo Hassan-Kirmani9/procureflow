@@ -1,0 +1,88 @@
+<div class="flex flex-col gap-6">
+
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">My Purchase Requests</h1>
+      <p class="text-gray-500 text-sm mt-1">Track and manage your requests</p>
+    </div>
+    <p-button label="New Request" icon="pi pi-plus" (click)="openDialog()" />
+  </div>
+
+  <p-table [value]="prs" [loading]="loading" [stripedRows]="true">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Est. Cost</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>Date</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-pr>
+      <tr>
+        <td>{{ pr.title }}</td>
+        <td>{{ pr.category }}</td>
+        <td>{{ pr.estimatedCost | number }}</td>
+        <td>{{ pr.priority }}</td>
+        <td>
+          <p-tag [value]="pr.status" [severity]="getSeverity(pr.status)" />
+        </td>
+        <td>{{ pr.createdAt | date:'mediumDate' }}</td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="6" class="text-center text-gray-500 py-8">No purchase requests found</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <p-dialog header="New Purchase Request" [(visible)]="showDialog" [modal]="true" [style]="{width: '550px'}">
+    <form [formGroup]="form" class="flex flex-col gap-4 pt-2">
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Title</label>
+        <input pInputText formControlName="title" placeholder="What do you need?" class="w-full" />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Description</label>
+        <input pInputText formControlName="description" placeholder="Describe the requirement" class="w-full" />
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1">
+          <label class="font-medium text-sm">Category</label>
+          <input pInputText formControlName="category" placeholder="e.g. IT Equipment" class="w-full" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="font-medium text-sm">Department</label>
+          <input pInputText formControlName="department" placeholder="Your department" class="w-full" />
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1">
+          <label class="font-medium text-sm">Budget Code</label>
+          <input pInputText formControlName="budgetCode" placeholder="e.g. IT001" class="w-full" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="font-medium text-sm">Priority</label>
+          <p-select formControlName="priority" [options]="priorities" optionLabel="label" optionValue="value" styleClass="w-full" />
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1">
+          <label class="font-medium text-sm">Estimated Cost</label>
+          <input pInputText type="number" formControlName="estimatedCost" placeholder="0" class="w-full" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="font-medium text-sm">Quantity</label>
+          <input pInputText type="number" formControlName="quantity" placeholder="1" class="w-full" />
+        </div>
+      </div>
+    </form>
+    <ng-template pTemplate="footer">
+      <p-button label="Cancel" severity="secondary" [outlined]="true" (click)="showDialog = false" />
+      <p-button label="Submit Request" (click)="createPR()" />
+    </ng-template>
+  </p-dialog>
+
+</div>
