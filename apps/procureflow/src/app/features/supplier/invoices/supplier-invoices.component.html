@@ -1,0 +1,69 @@
+<div class="flex flex-col gap-6">
+
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">My Invoices</h1>
+      <p class="text-gray-500 text-sm mt-1">Submit and track your invoices</p>
+    </div>
+    <p-button label="Submit Invoice" icon="pi pi-plus" (click)="openDialog()" />
+  </div>
+
+  <p-table [value]="invoices" [loading]="loading" [stripedRows]="true">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Invoice No</th>
+        <th>PO Number</th>
+        <th>Amount</th>
+        <th>Due Date</th>
+        <th>Status</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-invoice>
+      <tr>
+        <td>{{ invoice.invoiceNumber }}</td>
+        <td>{{ invoice.purchaseOrder?.poNumber }}</td>
+        <td>{{ invoice.amount | number }}</td>
+        <td>{{ invoice.dueDate | date:'mediumDate' }}</td>
+        <td>
+          <p-tag [value]="invoice.status" [severity]="getSeverity(invoice.status)" />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5" class="text-center text-gray-500 py-8">No invoices submitted yet</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <p-dialog header="Submit Invoice" [(visible)]="showDialog" [modal]="true" [style]="{width:'450px'}">
+    <form [formGroup]="form" class="flex flex-col gap-4 pt-2">
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Purchase Order</label>
+        <select formControlName="purchaseOrderId" class="w-full border rounded-md p-2">
+          <option value="">Select PO</option>
+          @for (po of myPOs; track po._id) {
+            <option [value]="po._id">{{ po.poNumber }} — {{ po.title }}</option>
+          }
+        </select>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Invoice Amount</label>
+        <input pInputText type="number" formControlName="amount" placeholder="0" class="w-full" />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Due Date</label>
+        <input type="date" formControlName="dueDate" class="w-full border rounded-md p-2" />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Notes (optional)</label>
+        <input pInputText formControlName="notes" placeholder="Additional notes" class="w-full" />
+      </div>
+    </form>
+    <ng-template pTemplate="footer">
+      <p-button label="Cancel" severity="secondary" [outlined]="true" (click)="showDialog = false" />
+      <p-button label="Submit Invoice" (click)="submitInvoice()" />
+    </ng-template>
+  </p-dialog>
+
+</div>

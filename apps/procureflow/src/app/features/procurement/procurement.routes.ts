@@ -4,6 +4,7 @@ import { PRListComponent } from './purchase-requests/pr-list.component'
 import { RfqListComponent } from './rfq/rfq-list.component'
 import { POListComponent } from './purchase-orders/po-list.component'
 import { GRNListComponent } from './grn/grn-list.component'
+import { InvoicesComponent } from './invoices/invoices.component'
 
 export const PROCUREMENT_ROUTES: Routes = [
   {
@@ -14,7 +15,8 @@ export const PROCUREMENT_ROUTES: Routes = [
       { path: 'purchase-requests', component: PRListComponent },
       { path: 'rfq', component: RfqListComponent },
       { path: 'purchase-orders', component: POListComponent },
-      { path: 'grn', component: GRNListComponent }
+      { path: 'grn', component: GRNListComponent },
+      { path: 'invoices', component: InvoicesComponent }
 
     ]
   }
