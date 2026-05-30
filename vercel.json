@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm install && npx nx build procureflow --configuration=production",
+  "buildCommand": "npm run build:fe",
   "outputDirectory": "dist/apps/procureflow/browser",
-  "installCommand": "npm install",
+  "installCommand": "npm install --legacy-peer-deps",
   "framework": null
 }
