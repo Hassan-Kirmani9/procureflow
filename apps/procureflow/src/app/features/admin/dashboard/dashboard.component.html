@@ -1,1 +1,239 @@
-<h1 class="text-2xl font-bold">Admin Dashboard</h1>
+<div class="flex flex-col gap-6">
+
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl font-bold text-navy-800">Admin Dashboard</h1>
+    <p class="text-navy-400 text-sm mt-1">System overview and management</p>
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+    <div class="bg-white rounded-xl border border-navy-200 p-5 shadow-sm">
+      <div class="flex items-center justify-between mb-3">
+        <p class="text-xs font-semibold text-navy-400 uppercase tracking-wide">Total Users</p>
+        <div class="w-9 h-9 bg-primary-100 rounded-lg flex items-center justify-center">
+          <i class="pi pi-users text-primary-600 text-sm"></i>
+        </div>
+      </div>
+      <p class="text-3xl font-bold text-navy-800">{{ totalUsers }}</p>
+      <p class="text-xs text-navy-400 mt-1">Across all roles</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-navy-200 p-5 shadow-sm">
+      <div class="flex items-center justify-between mb-3">
+        <p class="text-xs font-semibold text-navy-400 uppercase tracking-wide">Departments</p>
+        <div class="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center">
+          <i class="pi pi-building text-blue-600 text-sm"></i>
+        </div>
+      </div>
+      <p class="text-3xl font-bold text-navy-800">{{ totalDepartments }}</p>
+      <p class="text-xs text-navy-400 mt-1">Active departments</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-navy-200 p-5 shadow-sm">
+      <div class="flex items-center justify-between mb-3">
+        <p class="text-xs font-semibold text-navy-400 uppercase tracking-wide">Total Budget</p>
+        <div class="w-9 h-9 bg-green-100 rounded-lg flex items-center justify-center">
+          <i class="pi pi-wallet text-green-600 text-sm"></i>
+        </div>
+      </div>
+      <p class="text-3xl font-bold text-navy-800">{{ totalBudget | number }}</p>
+      <p class="text-xs text-navy-400 mt-1">Allocated this year</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-navy-200 p-5 shadow-sm">
+      <div class="flex items-center justify-between mb-3">
+        <p class="text-xs font-semibold text-navy-400 uppercase tracking-wide">Suppliers</p>
+        <div class="w-9 h-9 bg-purple-100 rounded-lg flex items-center justify-center">
+          <i class="pi pi-truck text-purple-600 text-sm"></i>
+        </div>
+      </div>
+      <p class="text-3xl font-bold text-navy-800">{{ roleStats.supplier }}</p>
+      <p class="text-xs text-navy-400 mt-1">Registered vendors</p>
+    </div>
+
+  </div>
+
+  <!-- Charts Row -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <div class="bg-white rounded-xl border border-navy-200 p-5 shadow-sm">
+      <h3 class="font-semibold text-navy-800 mb-4">Users by Role</h3>
+      <div style="height: 250px">
+        @if (roleChartData.labels) {
+          <p-chart type="doughnut" [data]="roleChartData" [options]="chartOptions" height="250" />
+        }
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-navy-200 p-5 shadow-sm">
+      <h3 class="font-semibold text-navy-800 mb-4">Budget vs Committed</h3>
+      <div style="height: 250px">
+        @if (budgetChartData.labels) {
+          <p-chart type="bar" [data]="budgetChartData" [options]="barChartOptions" height="250" />
+        } @else {
+          <div class="flex items-center justify-center h-full">
+            <p class="text-sm text-navy-400">No budget data available</p>
+          </div>
+        }
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Role Stats + Budget Utilization -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <div class="bg-white rounded-xl border border-navy-200 p-5 shadow-sm">
+      <h3 class="font-semibold text-navy-800 mb-4">Role Breakdown</h3>
+      <div class="flex flex-col gap-3">
+        <div class="flex items-center justify-between p-3 bg-navy-50 rounded-lg">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+              <i class="pi pi-shield text-red-600 text-xs"></i>
+            </div>
+            <span class="text-sm font-medium text-navy-700">Super Admin</span>
+          </div>
+          <span class="text-lg font-bold text-navy-800">{{ roleStats.super_admin }}</span>
+        </div>
+        <div class="flex items-center justify-between p-3 bg-navy-50 rounded-lg">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+              <i class="pi pi-briefcase text-blue-600 text-xs"></i>
+            </div>
+            <span class="text-sm font-medium text-navy-700">Procurement Manager</span>
+          </div>
+          <span class="text-lg font-bold text-navy-800">{{ roleStats.procurement_manager }}</span>
+        </div>
+        <div class="flex items-center justify-between p-3 bg-navy-50 rounded-lg">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+              <i class="pi pi-user text-green-600 text-xs"></i>
+            </div>
+            <span class="text-sm font-medium text-navy-700">Requester</span>
+          </div>
+          <span class="text-lg font-bold text-navy-800">{{ roleStats.requester }}</span>
+        </div>
+        <div class="flex items-center justify-between p-3 bg-navy-50 rounded-lg">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+              <i class="pi pi-truck text-purple-600 text-xs"></i>
+            </div>
+            <span class="text-sm font-medium text-navy-700">Supplier</span>
+          </div>
+          <span class="text-lg font-bold text-navy-800">{{ roleStats.supplier }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-navy-200 p-5 shadow-sm">
+      <h3 class="font-semibold text-navy-800 mb-4">Budget Utilization</h3>
+      <div class="flex flex-col gap-4">
+        @for (budget of budgets; track budget._id) {
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm font-medium text-navy-700">{{ budget.department }}</span>
+              <span class="text-xs text-navy-400">{{ budget.utilizationPercent }}%</span>
+            </div>
+            <div class="w-full bg-navy-100 rounded-full h-2">
+              <div
+                class="h-2 rounded-full transition-all"
+                [class.bg-green-500]="budget.utilizationPercent < 80"
+                [class.bg-yellow-500]="budget.utilizationPercent >= 80 && budget.utilizationPercent < 100"
+                [class.bg-red-500]="budget.utilizationPercent >= 100"
+                [style.width.%]="budget.utilizationPercent > 100 ? 100 : budget.utilizationPercent"
+              ></div>
+            </div>
+            <div class="flex justify-between mt-1">
+              <span class="text-xs text-navy-400">{{ budget.committedAmount | number }} committed</span>
+              <span class="text-xs text-navy-400">{{ budget.totalAmount | number }} total</span>
+            </div>
+          </div>
+        }
+        @empty {
+          <p class="text-sm text-navy-400 text-center py-4">No budgets configured</p>
+        }
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Recent Users Table -->
+  <div class="bg-white rounded-xl border border-navy-200 shadow-sm">
+    <div class="p-5 border-b border-navy-100 flex items-center justify-between">
+      <h3 class="font-semibold text-navy-800">Recent Users</h3>
+      <a routerLink="/admin/users" class="text-xs text-primary-600 font-medium hover:text-primary-700">View all →</a>
+    </div>
+    <p-table [value]="recentUsers" [stripedRows]="true">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Status</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-user>
+        <tr>
+          <td>
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
+                <span class="text-xs font-bold text-primary-600">{{ user.name?.charAt(0)?.toUpperCase() }}</span>
+              </div>
+              <span class="font-medium">{{ user.name }}</span>
+            </div>
+          </td>
+          <td>{{ user.email }}</td>
+          <td>
+            <p-tag [value]="user.role" [severity]="getRoleSeverity(user.role)" />
+          </td>
+          <td>
+            <p-tag [value]="user.isActive ? 'Active' : 'Inactive'" [severity]="getUserSeverity(user.isActive)" />
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4" class="text-center text-navy-400 py-8">No users found</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="bg-white rounded-xl border border-navy-200 p-5 shadow-sm">
+    <h3 class="font-semibold text-navy-800 mb-4">Quick Actions</h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <a routerLink="/admin/users"
+         class="flex flex-col items-center gap-2 p-4 bg-navy-50 rounded-xl hover:bg-primary-50 hover:border-primary-200 border border-transparent transition-all cursor-pointer">
+        <div class="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+          <i class="pi pi-user-plus text-primary-600"></i>
+        </div>
+        <span class="text-xs font-medium text-navy-700 text-center">Add User</span>
+      </a>
+      <a routerLink="/admin/departments"
+         class="flex flex-col items-center gap-2 p-4 bg-navy-50 rounded-xl hover:bg-primary-50 hover:border-primary-200 border border-transparent transition-all cursor-pointer">
+        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+          <i class="pi pi-building text-blue-600"></i>
+        </div>
+        <span class="text-xs font-medium text-navy-700 text-center">Add Department</span>
+      </a>
+      <a routerLink="/admin/budgets"
+         class="flex flex-col items-center gap-2 p-4 bg-navy-50 rounded-xl hover:bg-primary-50 hover:border-primary-200 border border-transparent transition-all cursor-pointer">
+        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+          <i class="pi pi-wallet text-green-600"></i>
+        </div>
+        <span class="text-xs font-medium text-navy-700 text-center">Set Budget</span>
+      </a>
+      <a routerLink="/admin/users"
+         class="flex flex-col items-center gap-2 p-4 bg-navy-50 rounded-xl hover:bg-primary-50 hover:border-primary-200 border border-transparent transition-all cursor-pointer">
+        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+          <i class="pi pi-cog text-purple-600"></i>
+        </div>
+        <span class="text-xs font-medium text-navy-700 text-center">Manage Roles</span>
+      </a>
+    </div>
+  </div>
+
+</div>

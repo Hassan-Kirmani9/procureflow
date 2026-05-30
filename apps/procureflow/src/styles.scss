@@ -1,3 +1,240 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #F8FAFC;
+  color: #1E293B;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #F1F5F9; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+
+// PrimeNG Table overrides
+.p-datatable {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #E2E8F0;
+  background: white;
+
+  .p-datatable-thead > tr > th {
+    background: #F8FAFC !important;
+    color: #64748B !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    padding: 12px 16px !important;
+    border-bottom: 1px solid #E2E8F0 !important;
+    border-right: none !important;
+  }
+
+  .p-datatable-tbody > tr > td {
+    padding: 12px 16px !important;
+    font-size: 13px !important;
+    color: #334155 !important;
+    border-bottom: 1px solid #F1F5F9 !important;
+    border-right: none !important;
+  }
+
+  .p-datatable-tbody > tr:hover {
+    background: #FFFBEB !important;
+  }
+
+  .p-datatable-tbody > tr:last-child > td {
+    border-bottom: none !important;
+  }
+}
+
+// Loading overlay fix
+.p-datatable-mask {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+  z-index: 10 !important;
+  border-radius: 12px !important;
+}
+
+.p-datatable-loading-icon {
+  color: #F59E0B !important;
+  width: 2rem !important;
+  height: 2rem !important;
+}
+
+.p-datatable-wrapper {
+  position: relative !important;
+  min-height: 120px !important;
+}
+
+// PrimeNG Input overrides
+.p-inputtext {
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 8px !important;
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+  color: #1E293B !important;
+  background: #F8FAFC !important;
+  transition: all 0.2s !important;
+  width: 100% !important;
+
+  &:focus {
+    border-color: #F59E0B !important;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1) !important;
+    background: white !important;
+  }
+
+  &::placeholder {
+    color: #94A3B8 !important;
+  }
+}
+
+// PrimeNG Button overrides
+.p-button {
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 10px 18px !important;
+  transition: all 0.2s !important;
+
+  &.p-button-success {
+    background: #10B981 !important;
+    border-color: #10B981 !important;
+    color: white !important;
+
+    &:hover {
+      background: #059669 !important;
+      border-color: #059669 !important;
+    }
+  }
+
+  &.p-button-danger {
+    background: #EF4444 !important;
+    border-color: #EF4444 !important;
+    color: white !important;
+
+    &:hover {
+      background: #DC2626 !important;
+      border-color: #DC2626 !important;
+    }
+  }
+
+  &.p-button-secondary {
+    background: #F1F5F9 !important;
+    border-color: #E2E8F0 !important;
+    color: #475569 !important;
+
+    &:hover {
+      background: #E2E8F0 !important;
+    }
+  }
+
+  &.p-button-info {
+    background: #3B82F6 !important;
+    border-color: #3B82F6 !important;
+    color: white !important;
+
+    &:hover {
+      background: #2563EB !important;
+      border-color: #2563EB !important;
+    }
+  }
+
+  &.p-button-outlined {
+    background: transparent !important;
+  }
+}
+
+// Primary button default color
+.p-button:not(.p-button-outlined):not(.p-button-text):not(.p-button-success):not(.p-button-danger):not(.p-button-secondary):not(.p-button-info):not(.p-button-warn) {
+  background: #F59E0B !important;
+  border-color: #F59E0B !important;
+  color: white !important;
+
+  &:hover {
+    background: #D97706 !important;
+    border-color: #D97706 !important;
+  }
+}
+
+// PrimeNG Dialog overrides
+.p-dialog {
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.15) !important;
+
+  .p-dialog-header {
+    padding: 20px 24px !important;
+    border-bottom: 1px solid #F1F5F9 !important;
+    font-weight: 600 !important;
+    font-size: 15px !important;
+    color: #1E293B !important;
+  }
+
+  .p-dialog-content {
+    padding: 20px 24px !important;
+  }
+
+  .p-dialog-footer {
+    padding: 16px 24px !important;
+    border-top: 1px solid #F1F5F9 !important;
+    display: flex !important;
+    gap: 8px !important;
+    justify-content: flex-end !important;
+  }
+}
+
+// PrimeNG Tag overrides
+.p-tag {
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  padding: 3px 8px !important;
+  letter-spacing: 0.02em !important;
+}
+
+// PrimeNG Select/Dropdown overrides
+.p-select {
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 8px !important;
+  background: #F8FAFC !important;
+  width: 100% !important;
+
+  &:hover {
+    border-color: #F59E0B !important;
+  }
+}
+
+// Password component
+.p-password {
+  width: 100% !important;
+
+  input {
+    width: 100% !important;
+  }
+}
+
+// Card overrides
+.p-card {
+  border-radius: 16px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
+  border: 1px solid #E2E8F0 !important;
+}
+
+// Chart container
+.p-chart {
+  width: 100% !important;
+}

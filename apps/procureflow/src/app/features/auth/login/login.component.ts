@@ -4,8 +4,9 @@ import { ButtonModule } from "primeng/button";
 import { InputTextModule } from "primeng/inputtext";
 import { PasswordModule } from "primeng/password";
 import { CardModule } from "primeng/card";
-import { AuthService } from "../../../core/services/auth.service";
+import { CommonModule } from "@angular/common";
 import { Router, RouterModule } from "@angular/router";
+import { AuthService } from "../../../core/services/auth.service";
 
 @Component({
   standalone: true,
@@ -13,12 +14,13 @@ import { Router, RouterModule } from "@angular/router";
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     ButtonModule,
-    RouterModule,
     InputTextModule,
     PasswordModule,
-    CardModule
+    CardModule,
+    RouterModule
   ]
 })
 export class LoginComponent {
@@ -27,12 +29,25 @@ export class LoginComponent {
     email: new FormControl(''),
     password: new FormControl('')
   })
-  constructor(private authService: AuthService, private router: Router) { }
+
+  loading = false
+  errorMessage = ''
+
+  constructor(private authService: AuthService, private router: Router) {}
+
   onSubmit() {
     const { email, password } = this.form.value
-    this.authService.login(email!, password!).subscribe({
+    if (!email || !password) {
+      this.errorMessage = 'Please enter your email and password'
+      return
+    }
 
+    this.loading = true
+    this.errorMessage = ''
+
+    this.authService.login(email, password).subscribe({
       next: (response) => {
+        this.loading = false
         this.authService.saveToken(response.token)
         const role = this.authService.getRole()
         if (role === 'super_admin') this.router.navigate(['/admin'])
@@ -40,12 +55,16 @@ export class LoginComponent {
         else if (role === 'requester') this.router.navigate(['/requester'])
         else if (role === 'supplier') this.router.navigate(['/supplier'])
       },
+      error: (err) => {
+        this.loading = false
+        if (err.status === 401) {
+          this.errorMessage = 'Invalid email or password. Please try again.'
+        } else if (err.status === 0) {
+          this.errorMessage = 'Cannot connect to server. Please try again later.'
+        } else {
+          this.errorMessage = err.error?.message || 'Something went wrong. Please try again.'
+        }
+      }
     })
-    error: (err:any) => {
-      console.error("Login err", err)
-    }
   }
-
-
-
 }

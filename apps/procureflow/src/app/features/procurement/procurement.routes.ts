@@ -8,6 +8,7 @@ import { InvoicesComponent } from './invoices/invoices.component'
 import { SuppliersComponent } from './suppliers/suppliers.component'
 import { BudgetOverviewComponent } from './budgets/budget-overview.component'
 import { AnalyticsComponent } from './analytics/analytics.component'
+import { ProcurementDashboardComponent } from './dashboard/procurement-dashboard.component'
 
 export const PROCUREMENT_ROUTES: Routes = [
   {
@@ -22,7 +23,9 @@ export const PROCUREMENT_ROUTES: Routes = [
       { path: 'invoices', component: InvoicesComponent },
       { path: 'suppliers', component: SuppliersComponent },
       { path: 'budgets', component: BudgetOverviewComponent },
-      { path: 'analytics', component: AnalyticsComponent }
+      { path: 'analytics', component: AnalyticsComponent },
+      { path: 'dashboard', component: ProcurementDashboardComponent }
+
 
     ]
   }
