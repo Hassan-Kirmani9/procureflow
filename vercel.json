@@ -1,0 +1,6 @@
+{
+  "buildCommand": "npx nx build procureflow --configuration=production",
+  "outputDirectory": "dist/apps/procureflow/browser",
+  "installCommand": "npm install",
+  "framework": null
+}
