@@ -1,5 +1,1 @@
-{
-  "buildCommand": "npm install --legacy-peer-deps && node_modules/.bin/nx build procureflow --configuration=production",
-  "outputDirectory": "dist/apps/procureflow/browser",
-  "framework": null
-}
+﻿{"rewrites":[{"source":"/(.*)","destination":"/index.html"}]}

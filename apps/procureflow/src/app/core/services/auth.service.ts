@@ -5,7 +5,7 @@ import { Injectable } from "@angular/core";
 export class AuthService {
 
 
-    private apirUrl = 'http://localhost:3000/api'
+    private apirUrl = 'https://procureflow-backend-jexo.onrender.com/api'
 
     constructor(private http: HttpClient) { }
     login(email: string, password: string) {
