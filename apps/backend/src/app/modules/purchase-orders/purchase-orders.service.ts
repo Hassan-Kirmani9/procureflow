@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { PurchaseOrder, PurchaseOrderDocument, POStatus } from "./schemas/purchase-order.schema";
@@ -8,6 +8,8 @@ import { BudgetsService } from "../budgets/budgets.service";
 
 @Injectable()
 export class PurchaseOrdersService {
+
+  private readonly logger = new Logger(PurchaseOrdersService.name)
 
   constructor(
     @InjectModel(PurchaseOrder.name) private poModel: Model<PurchaseOrderDocument>,
@@ -68,6 +70,7 @@ export class PurchaseOrdersService {
   }
 
   async approve(id: string) {
+    this.logger.log(`Approving PO: ${id}`)
     const po = await this.poModel.findById(id)
       .populate('purchaseRequest')
     if (!po) throw new NotFoundException('PO not found')
@@ -76,8 +79,14 @@ export class PurchaseOrdersService {
     await po.save()
 
     const pr = po.purchaseRequest as any
+    this.logger.log(`PR department: ${pr?.department}`)
+    this.logger.log(`PO totalAmount: ${po.totalAmount}`)
+
     if (pr?.department) {
       await this.budgetsService.commitAmount(pr.department, po.totalAmount)
+      this.logger.log(`Budget committed for department: ${pr.department}`)
+    } else {
+      this.logger.warn('No department found on PR — budget not updated')
     }
 
     return po

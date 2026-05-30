@@ -1,116 +1,111 @@
 <div class="flex flex-col gap-6">
 
-  <div class="flex items-center justify-between">
-    <div>
-      <h1 class="text-2xl font-bold text-gray-800">Purchase Orders</h1>
-      <p class="text-gray-500 text-sm mt-1">Manage all purchase orders</p>
-    </div>
-  </div>
-
-  <!-- Generate PO from awarded RFQs -->
-  @if (awardedRfqs.length > 0) {
-    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-      <p class="font-medium text-blue-800 mb-3">Awarded RFQs — Generate PO</p>
-      <div class="flex flex-col gap-2">
-        @for (rfq of awardedRfqs; track rfq._id) {
-          <div class="flex items-center justify-between bg-white rounded-lg p-3 border">
-            <div>
-              <p class="font-medium text-sm">{{ rfq.title }}</p>
-              <p class="text-xs text-gray-500">{{ rfq.purchaseRequest?.title }}</p>
-            </div>
-            <p-button
-              label="Generate PO"
-              size="small"
-              icon="pi pi-file"
-              (click)="createPOFromRfq(rfq._id)"
-            />
-          </div>
-        }
-      </div>
-    </div>
-  }
-
-  <p-table [value]="pos" [loading]="loading" [stripedRows]="true">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>PO Number</th>
-        <th>Title</th>
-        <th>Supplier</th>
-        <th>Total Amount</th>
-        <th>Delivery Days</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-po>
-      <tr>
-        <td>{{ po.poNumber }}</td>
-        <td>{{ po.title }}</td>
-        <td>{{ po.supplier?.name }}</td>
-        <td>{{ po.totalAmount | number }}</td>
-        <td>{{ po.deliveryDays }} days</td>
-        <td>
-          <p-tag [value]="po.status" [severity]="getSeverity(po.status)" />
-        </td>
-        <td>
-          <p-button label="View" size="small" [outlined]="true" (click)="viewDetail(po)" />
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="7" class="text-center text-gray-500 py-8">No purchase orders found</td>
-      </tr>
-    </ng-template>
-  </p-table>
-
-  <!-- PO Detail Dialog -->
-  <p-dialog header="Purchase Order Detail" [(visible)]="showDetailDialog" [modal]="true" [style]="{width:'600px'}">
-    @if (selectedPO) {
-      <div class="flex flex-col gap-4">
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <p class="text-xs text-gray-500">PO Number</p>
-            <p class="font-medium">{{ selectedPO.poNumber }}</p>
-          </div>
-          <div>
-            <p class="text-xs text-gray-500">Status</p>
-            <p-tag [value]="selectedPO.status" [severity]="getSeverity(selectedPO.status)" />
-          </div>
-          <div>
-            <p class="text-xs text-gray-500">Supplier</p>
-            <p class="font-medium">{{ selectedPO.supplier?.name }}</p>
-          </div>
-          <div>
-            <p class="text-xs text-gray-500">Total Amount</p>
-            <p class="font-medium">{{ selectedPO.totalAmount | number }}</p>
-          </div>
-          <div>
-            <p class="text-xs text-gray-500">Quantity</p>
-            <p class="font-medium">{{ selectedPO.quantity }}</p>
-          </div>
-          <div>
-            <p class="text-xs text-gray-500">Unit Price</p>
-            <p class="font-medium">{{ selectedPO.unitPrice | number }}</p>
-          </div>
-          <div>
-            <p class="text-xs text-gray-500">Delivery Days</p>
-            <p class="font-medium">{{ selectedPO.deliveryDays }} days</p>
-          </div>
-          <div>
-            <p class="text-xs text-gray-500">Payment Terms</p>
-            <p class="font-medium">{{ selectedPO.paymentTerms || 'N/A' }}</p>
-          </div>
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">Purchase Orders</h1>
+            <p class="text-gray-500 text-sm mt-1">Manage all purchase orders</p>
         </div>
-      </div>
+    </div>
+
+    <!-- Generate PO from awarded RFQs -->
+    @if (awardedRfqs.length > 0) {
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <p class="font-medium text-blue-800 mb-3">Awarded RFQs — Generate PO</p>
+        <div class="flex flex-col gap-2">
+            @for (rfq of awardedRfqs; track rfq._id) {
+            <div class="flex items-center justify-between bg-white rounded-lg p-3 border">
+                <div>
+                    <p class="font-medium text-sm">{{ rfq.title }}</p>
+                    <p class="text-xs text-gray-500">{{ rfq.purchaseRequest?.title }}</p>
+                </div>
+                <p-button label="Generate PO" size="small" icon="pi pi-file" (click)="createPOFromRfq(rfq._id)" />
+            </div>
+            }
+        </div>
+    </div>
     }
-    <ng-template pTemplate="footer">
-      @if (selectedPO?.status === 'pending') {
-        <p-button label="Approve PO" severity="success" (click)="approve(selectedPO._id)" />
-        <p-button label="Cancel PO" severity="danger" [outlined]="true" (click)="cancel(selectedPO._id)" />
-      }
-      <p-button label="Close" severity="secondary" [outlined]="true" (click)="showDetailDialog = false" />
-    </ng-template>
-  </p-dialog>
+
+    <p-table [value]="pos" [loading]="loading" [stripedRows]="true">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>PO Number</th>
+                <th>Title</th>
+                <th>Supplier</th>
+                <th>Total Amount</th>
+                <th>Delivery Days</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-po>
+            <tr>
+                <td>{{ po.poNumber }}</td>
+                <td>{{ po.title }}</td>
+                <td>{{ po.supplier?.name }}</td>
+                <td>{{ po.totalAmount | number }}</td>
+                <td>{{ po.deliveryDays }} days</td>
+                <td>
+                    <p-tag [value]="po.status" [severity]="getSeverity(po.status)" />
+                </td>
+                <td>
+                    <p-button label="View" size="small" [outlined]="true" (click)="viewDetail(po)" />
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="7" class="text-center text-gray-500 py-8">No purchase orders found</td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+    <!-- PO Detail Dialog -->
+    <p-dialog header="Purchase Order Detail" [(visible)]="showDetailDialog" [modal]="true" [style]="{width:'600px'}">
+        @if (selectedPO) {
+        <div class="flex flex-col gap-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <p class="text-xs text-gray-500">PO Number</p>
+                    <p class="font-medium">{{ selectedPO.poNumber }}</p>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500">Status</p>
+                    <p-tag [value]="selectedPO.status" [severity]="getSeverity(selectedPO.status)" />
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500">Supplier</p>
+                    <p class="font-medium">{{ selectedPO.supplier?.name }}</p>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500">Total Amount</p>
+                    <p class="font-medium">{{ selectedPO.totalAmount | number }}</p>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500">Quantity</p>
+                    <p class="font-medium">{{ selectedPO.quantity }}</p>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500">Unit Price</p>
+                    <p class="font-medium">{{ selectedPO.unitPrice | number }}</p>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500">Delivery Days</p>
+                    <p class="font-medium">{{ selectedPO.deliveryDays }} days</p>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500">Payment Terms</p>
+                    <p class="font-medium">{{ selectedPO.paymentTerms || 'N/A' }}</p>
+                </div>
+            </div>
+        </div>
+        }
+        <ng-template pTemplate="footer">
+            @if (isPending()) {
+            <p-button label="Approve PO" severity="success" (click)="approve(selectedPO._id)" />
+            <p-button label="Cancel PO" severity="danger" [outlined]="true" (click)="cancel(selectedPO._id)" />
+            }
+            <p-button label="Close" severity="secondary" [outlined]="true" (click)="showDetailDialog = false" />
+        </ng-template>
+    </p-dialog>
 
 </div>

@@ -62,7 +62,7 @@ export class POListComponent implements OnInit {
 
   createPOFromRfq(rfqId: string) {
     this.poService.createFromRfq(rfqId).subscribe({
-      next: () => this.loadPOs(),
+      next: () => { this.loadPOs(); this.loadAwardedRfqs() },
       error: (err) => console.error(err)
     })
   }
@@ -79,9 +79,14 @@ export class POListComponent implements OnInit {
   }
 
   approve(id: string) {
+    console.log('Approving PO:', id)
     this.poService.approve(id).subscribe({
-      next: () => { this.showDetailDialog = false; this.loadPOs() },
-      error: (err) => console.error(err)
+      next: (data) => {
+        console.log('PO approved:', data)
+        this.showDetailDialog = false
+        this.loadPOs()
+      },
+      error: (err) => console.error('Approve error:', err)
     })
   }
 
@@ -90,6 +95,10 @@ export class POListComponent implements OnInit {
       next: () => { this.showDetailDialog = false; this.loadPOs() },
       error: (err) => console.error(err)
     })
+  }
+
+  isPending(): boolean {
+    return this.selectedPO?.status === 'pending'
   }
 
   getSeverity(status: string) {

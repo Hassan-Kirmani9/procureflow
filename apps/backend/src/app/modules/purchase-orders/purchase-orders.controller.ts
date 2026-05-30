@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Patch, UseGuards, Request } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, Patch, UseGuards, Request, Logger } from "@nestjs/common";
 import { PurchaseOrdersService } from "./purchase-orders.service";
 import { CreatePoDto } from "./dto/create-po.dto";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
@@ -8,6 +8,8 @@ import { Roles } from "../auth/decorators/roles.decorator";
 @Controller('purchase-orders')
 @UseGuards(JwtAuthGuard)
 export class PurchaseOrdersController {
+
+  private readonly logger = new Logger(PurchaseOrdersController.name)
 
   constructor(private poService: PurchaseOrdersService) {}
 
@@ -41,6 +43,7 @@ export class PurchaseOrdersController {
   @UseGuards(RolesGuard)
   @Roles('procurement_manager', 'super_admin')
   approve(@Param('id') id: string) {
+    this.logger.log(`Approve endpoint hit for PO: ${id}`)
     return this.poService.approve(id)
   }
 
