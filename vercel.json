@@ -1,6 +1,5 @@
 {
-  "buildCommand": "npm install --legacy-peer-deps && ./node_modules/.bin/nx build procureflow --configuration=production",
+  "buildCommand": "npm install --legacy-peer-deps && node_modules/.bin/nx build procureflow --configuration=production",
   "outputDirectory": "dist/apps/procureflow/browser",
-  "installCommand": "echo 'skip'",
   "framework": null
 }
